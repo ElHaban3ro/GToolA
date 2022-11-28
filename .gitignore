@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 # My ignores.
 Samples/
 
 
 
+=======
+>>>>>>> 701fc753f8c8c8886858567fd55e0da6a604b3d0
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
