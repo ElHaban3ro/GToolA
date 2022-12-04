@@ -1,4 +1,6 @@
 console.log('Running...')
+var consults = new XMLHttpRequest();
+
 var canvas = document.getElementById('canvasObj')
 var ctx = canvas.getContext('2d') // Con esto podemos manipulas las imagenes del canvas.
 
@@ -6,14 +8,16 @@ var video = document.getElementById('videoObj')
 var video_main_res = 200
 
 var model = null
-(async () => {
-    model = await tf.loadLayersModel('../Models/98/model-98.json')
-})()
+async function loadModel() {
+    model = await tf.loadLayersModel('/GTP/Files/ModelTrain/json/98')
+}
+loadModel()
+
 
 
 
 // Después de que se cargue la pestaña, la WEB.
-window.onload() = function () {
+window.onload = function () {
     seeWebCam()
 }
 
@@ -29,4 +33,8 @@ function seeWebCam(){
         }
     }
 
+    var webCamPermissions = navigator.mediaDevices.getUserMedia(constraints)
+    video.srcObject = webCamPermissions
+    // process_camera()
+    // prediction()
 }
