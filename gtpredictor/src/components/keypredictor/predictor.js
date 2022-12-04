@@ -1,12 +1,16 @@
-import {useRef} from 'react'
+import React,{useRef, useEffect} from 'react'
+import ModelJson from '../../Models/model-98.json'
+import * as tf from '@tensorflow/tfjs'
 
 
 export default function Predictor() {
     
     const video = useRef(null)
+    const canvas = useRef(null)
+
     const main_resolution = 200
 
-    // const canvas = document.getElementById('webcam_canvas')
+    const model = null
 
     const constraints = {
         audio: false,
@@ -19,20 +23,27 @@ export default function Predictor() {
     }
 
     
-    async function init() {
+    async function Init() {
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
-        handleAccess(stream)
+
+        useEffect(() => {
+
+            handleAccess(stream)
+
+        })
     }
     
     
 
     async function handleAccess(stream) {
-        video.current.srcObject = stream
+        video.current.src = stream
 
     }
 
 
-    init()
+    (async () => {
+        const model = await tf.loadLayersModel(ModelJson)
+    })();
 
     const prediction = () => {
         if (model != null) {
@@ -45,10 +56,12 @@ export default function Predictor() {
 
     return(
         <div className="keyPredictor_div">
+            
+            <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
 
             <video className="video_webcam" id='video_webcam_id' ref={video} playsInline autoPlay></video>
 
-            <canvas className="canvas_cam_predictor" height={main_resolution} width={main_resolution} id='webcam_canvas'></canvas>
+            <canvas className="canvas_cam_predictor" ref={canvas} height={main_resolution} width={main_resolution} id='webcam_canvas'></canvas>
 
         </div>
     )

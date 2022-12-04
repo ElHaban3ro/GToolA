@@ -90,7 +90,6 @@ target/
 
 # WEB
 gtpredictor/node_modules/
-gtpredictor/.gitignore
 
 
 
