@@ -1,18 +1,13 @@
 # Imports
 
 # Flask
-from flask import Flask
+from flask import Flask, render_template, send_file
 from markupsafe import escape
 
 # Others
 import pyautogui as pag
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 701fc753f8c8c8886858567fd55e0da6a604b3d0
 app = Flask(__name__)
 app.config.from_pyfile('api_configs.py')
 
@@ -28,9 +23,15 @@ def down_key(dkey):
 
 
 
+@app.route('/GTP/UI')
+def GToolUI():
+    return render_template('GTP/GTP.html')
 
-<<<<<<< HEAD
+
+@app.route('/GTP/Files/MainJS')
+def GTP_Appjs():
+    return send_file('Templates/GTP/scripts/app.js')
+
+
+
 app.run(host = '192.168.0.3')
-=======
-app.run()
->>>>>>> 701fc753f8c8c8886858567fd55e0da6a604b3d0
