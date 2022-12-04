@@ -51,6 +51,7 @@ function prediction() {
         resample_single(canvas, 28, 28, otherCanvas)
 
         var ctx2 = otherCanvas.getContext('2d')
+        ctx2.drawImage(video, 90, 90, 20, 20, 0, 0, 28, 28)
 
         var imgData = ctx2.getImageData(0, 0, 28, 28)
         var arr = []
@@ -76,9 +77,11 @@ function prediction() {
         var classes = ['alt', 'y', 'n', 'h']
         document.getElementById('result').innerHTML = classes[maxIndex]
 
+        consults.open('GET', `/GPT/API/press/${classes[maxIndex]}`)
+        consults.send()
     }
 
-    setTimeout(prediction, 150)
+    setTimeout(prediction, 1500)
 
 }
 

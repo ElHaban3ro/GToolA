@@ -16,7 +16,7 @@ app.config.from_pyfile('api_configs.py')
 # GTP
 
 # URLs
-@app.route('/down/key/<string:dkey>')
+@app.route('/GPT/API/press/<string:dkey>')
 def down_key(dkey):
     # Down key.
     pag.press(dkey)
@@ -54,4 +54,4 @@ def helping_to_tf():
     return send_file(f'Templates/GTP/Models/{accuracy}/model-{accuracy}.bin'), 200
     
 
-app.run(host = '192.168.0.3')
+app.run()
