@@ -47,4 +47,11 @@ def GTP_ModelJson(accuracy, format):
         return 'Error to found file with this accuracy.', 404
 
 
+# TEST!!!!!!
+@app.route('/GTP/Files/ModelTrain/json/group1-shard1of1.bin')
+def helping_to_tf():
+    accuracy = 98
+    return send_file(f'Templates/GTP/Models/{accuracy}/model-{accuracy}.bin'), 200
+    
+
 app.run(host = '192.168.0.3')
