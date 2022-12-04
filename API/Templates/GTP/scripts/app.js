@@ -38,9 +38,9 @@ function seeWebCam(){
 
         video.srcObject = stream
         
+        process_camera()
+        prediction()
     })
-    process_camera()
-    prediction()
     
 }
 
@@ -73,12 +73,13 @@ function prediction() {
         var results = model.predict(tensor4).dataSync()
         var maxIndex = results.indexOf(Math.max.apply(null, results))
 
-        alert('a')
         var classes = ['alt', 'y', 'n', 'h']
-        alert(classes[maxIndex])
         document.getElementById('result').innerHTML = classes[maxIndex]
 
     }
+
+    setTimeout(prediction, 150)
+
 }
 
 
@@ -88,8 +89,8 @@ function process_camera() {
     ctx.drawImage(video, 0, 0, video_main_res, video_main_res, 0, 0, video_main_res, video_main_res)
     setTimeout(process_camera, 20)
     
-    var ctx2 = otherCanvas.getContext('2d')
-    ctx2.drawImage(video, 0, 0, 28, 28, 0, 0, 28, 28)
+    // var ctx2 = otherCanvas.getContext('2d')
+    // ctx2.drawImage(video, 0, 0, 28, 28, 0, 0, 28, 28)
 }
 
 
