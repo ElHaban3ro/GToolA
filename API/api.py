@@ -12,8 +12,19 @@ import time
 import datetime
 
 
+import subprocess
+import threading
+import sys
+
+# Correr servidor ngrok
+command = 'ngrok http 5000'.split(' ')
+threading.Thread(target = lambda: subprocess.run(command)).start()
+
+
+
+# print(os.path.dirname(sys.executable))
 app = Flask(__name__)
-app.config.from_pyfile('api_configs.py')
+app.config.from_pyfile(f'{os.path.dirname(sys.executable)}/api_configs.py')
 
 global press_keys
 press_keys = True
@@ -35,7 +46,7 @@ def down_key(dkey):
     
     else:
         walk_macro(1)
-        time.sleep(5)
+        time.sleep(3)
 
         press_keys = True
         return f'Walk macro activated.', 200
@@ -113,8 +124,8 @@ def GTP_Appjs():
 
 @app.route('/GTP/Files/ModelTrain/<string:format>/<int:accuracy>')
 def GTP_ModelJson(accuracy, format):
-    if os.path.isfile(os.path.abspath(f'./API/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}')):
-        return send_file(f'Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}'), 200
+    if os.path.isfile(os.path.abspath(f'{os.path.dirname(sys.executable)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}')):
+        return send_file(f'{os.path.dirname(sys.executable)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}'), 200
     
     else: 
         return 'Error to found file with this accuracy.', 404
@@ -124,7 +135,7 @@ def GTP_ModelJson(accuracy, format):
 @app.route('/GTP/Files/ModelTrain/json/group1-shard1of1.bin')
 def helping_to_tf():
     accuracy = 98
-    return send_file(f'Templates/GTP/Models/{accuracy}/model-{accuracy}.bin'), 200
+    return send_file(f'{os.path.dirname(sys.executable)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.bin'), 200
     
 
-app.run()
+app.run(port = 5000)
