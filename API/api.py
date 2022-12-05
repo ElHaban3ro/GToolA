@@ -34,25 +34,40 @@ def down_key(dkey):
         return f'He oprimido la tecla {escape(dkey).upper()}', 200
     
     else:
-        walk_macro()
-        # time.sleep(5)
+        walk_macro(1)
+        time.sleep(5)
 
         press_keys = True
         return f'Walk macro activated.', 200
 
 
 @app.route('/GTP/API/macros/walk')
-def walk_macro():
-    pag.keyDown('w') # Teclado para avanazr
-    time.sleep(5)
-    pag.keyUp('w') # Tecla para dejar de avanzar.
+def walk_macro(work_type: int):
+    if work_type == 1:
+        # Caminar hacia la zona de trabajo.
+        pag.keyDown('w') # Teclado para avanazr
+        time.sleep(5.3)
+        pag.keyUp('w') # Tecla para dejar de avanzar.
 
-    pag.keyDown('s') # Tecla para retrodeceder.
-    time.sleep(5)
-    pag.keyUp('s') # Tecla para dejar de retroceder.
+        # Dejamos la roca
+        pag.press('alt')
+        pag.press('alt')
+        pag.press('alt')
+        pag.press('alt') # redundancia
 
-    global press_keys
-    press_keys = True
+
+
+        # pag.press('d') # redundancia
+        # pag.press('d') # redundancia
+        pag.keyDown('s') # Tecla para retrodeceder.
+        time.sleep(5.3)
+        pag.keyUp('s') # Tecla para dejar de retroceder.
+        pag.press('f')
+        pag.press('f')
+
+
+        global press_keys
+        press_keys = True
     return 'Walking...'
 
 
