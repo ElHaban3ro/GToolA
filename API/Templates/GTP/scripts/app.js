@@ -1,5 +1,15 @@
 console.log('Running...')
 var consults = new XMLHttpRequest();
+var consultsWalk = new XMLHttpRequest();
+
+var consultsAnyKey = new XMLHttpRequest();
+
+var consultsStop = new XMLHttpRequest();
+
+
+var consultsPressVar = new XMLHttpRequest();
+var pressVar = ''
+
 
 var canvas = document.getElementById('canvas')
 var otherCanvas = document.getElementById('otherCanvas')
@@ -7,6 +17,10 @@ var ctx = canvas.getContext('2d') // Con esto podemos manipulas las imagenes del
 
 var video = document.getElementById('videoObj')
 var video_main_res = 200
+
+var pressVar = ''
+
+
 
 var model = null
 async function loadModel() {
@@ -23,6 +37,26 @@ window.onload = function () {
 }
 
 
+var hviId = setInterval(handlerVar, 1000)
+
+function handlerVar() {
+    consultsPressVar.open('GET', '/GTP/API/get/pressvar')
+    consultsPressVar.send()
+    consultsPressVar.onload = () => {
+        
+        pressVar = consultsPressVar.response
+        console.log(consultsPressVar.response)
+        
+        if (consultsPressVar.response === 'True'){
+            clearInterval(hviId)
+            seeWebCam()
+        }
+    }
+}
+
+
+
+
 
 function seeWebCam(){
 
@@ -37,17 +71,19 @@ function seeWebCam(){
     navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
 
         video.srcObject = stream
-        
         process_camera()
         prediction()
     })
     
 }
 
-
+var count = 0
+var timeoutId = ''
 
 function prediction() {
-    if (model != null) {
+
+    if (pressVar === 'True'){
+        if (model != null) {
         resample_single(canvas, 28, 28, otherCanvas)
 
         var ctx2 = otherCanvas.getContext('2d')
@@ -62,27 +98,52 @@ function prediction() {
             var green = imgData.data[p + 1] / 255
             var blue = imgData.data[p + 2] / 255
 
-            arr28.push([red, green, blue]) 
-            if (arr28.length == 28) {
-                arr.push(arr28)
-                arr28 = []
+                arr28.push([red, green, blue]) 
+                if (arr28.length === 28) {
+                    arr.push(arr28)
+                    arr28 = []
+                }
             }
+    
+            arr = [arr] // Esto toma forma de tensor numpy, tal cual. No? entiendo.
+            var tensor4 = tf.tensor4d(arr);
+            var results = model.predict(tensor4).dataSync()
+            var maxIndex = results.indexOf(Math.max.apply(null, results))
+    
+            var classes = ['alt', 'y', 'n', 'h']
+            document.getElementById('result').innerHTML = classes[maxIndex]
+    
+            consults.open('GET', `/GTP/API/press/${classes[maxIndex]}`)
+            consults.send()
         }
+            
+        timeoutId = setTimeout(prediction, 500) 
 
-        arr = [arr] // Esto toma forma de tensor numpy, tal cual. No? entiendo.
-        var tensor4 = tf.tensor4d(arr);
-        var results = model.predict(tensor4).dataSync()
-        var maxIndex = results.indexOf(Math.max.apply(null, results))
+        if (count <= 40) {
+            count ++
+        } else {
+            console.log('para eliminar')
+            clearTimeout(timeoutId)
 
-        var classes = ['alt', 'y', 'n', 'h']
-        document.getElementById('result').innerHTML = classes[maxIndex]
+            consultsStop.open('GET', '/GTP/API/disable/press')
+            consultsStop.send()
+            hviId = setInterval(handlerVar, 1000)
 
-        consults.open('GET', `/GPT/API/press/${classes[maxIndex]}`)
-        consults.send()
+            consultsStop.onload = () => {
+
+                consultsAnyKey.open('GET', '/GTP/API/press/a')
+                consultsAnyKey.send()
+
+                count = 0
+
+            }
+
+        }
+    } else {
+        consultsStop.open('GET', '/GTP/API/enable/press')
+        consultsStop.send()
     }
-
-    setTimeout(prediction, 1500)
-
+        
 }
 
 

@@ -5,24 +5,82 @@ from flask import Flask, render_template, send_file
 from markupsafe import escape
 
 # Others
-import pyautogui as pag
+import pyautogui
+import pydirectinput as pag
 import os
+import time
+import datetime
 
 
 app = Flask(__name__)
 app.config.from_pyfile('api_configs.py')
 
+global press_keys
+press_keys = True
+
+
 
 # GTP
-
 # URLs
-@app.route('/GPT/API/press/<string:dkey>')
+@app.route('/GTP/API/press/<string:dkey>')
 def down_key(dkey):
     # Down key.
-    pag.press(dkey)
 
-    # Feedback
-    return f'He oprimido la tecla {escape(dkey).upper()}'
+    global press_keys
+    if press_keys:
+        pag.press(dkey)
+
+        # Feedback
+        return f'He oprimido la tecla {escape(dkey).upper()}', 200
+    
+    else:
+        walk_macro()
+        # time.sleep(5)
+
+        press_keys = True
+        return f'Walk macro activated.', 200
+
+
+@app.route('/GTP/API/macros/walk')
+def walk_macro():
+    pag.keyDown('w') # Teclado para avanazr
+    time.sleep(5)
+    pag.keyUp('w') # Tecla para dejar de avanzar.
+
+    pag.keyDown('s') # Tecla para retrodeceder.
+    time.sleep(5)
+    pag.keyUp('s') # Tecla para dejar de retroceder.
+
+    global press_keys
+    press_keys = True
+    return 'Walking...'
+
+
+@app.route('/GTP/API/disable/press')
+def disbale_pk():
+    global press_keys
+    press_keys = False
+    
+    return 'Disabled :('
+
+@app.route('/GTP/API/enable/press')
+def enable_pk():
+    global press_keys
+    press_keys = True
+
+    print(press_keys)
+    return 'Enabled!'
+
+
+@app.route('/GTP/API/get/pressvar')
+def getpressvar():
+    if press_keys:
+        return 'True'
+
+    else:
+        return 'False'
+
+
 
 
 @app.route('/GTP/UI')
