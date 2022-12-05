@@ -3,6 +3,8 @@
 # Flask
 from flask import Flask, render_template, send_file
 from markupsafe import escape
+import jinja2
+
 
 # Others
 import pyautogui
@@ -22,9 +24,11 @@ threading.Thread(target = lambda: subprocess.run(command)).start()
 
 
 
-# print(os.path.dirname(sys.executable))
+# print(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config.from_pyfile(f'{os.path.dirname(sys.executable)}/api_configs.py')
+
+# To run without executable, change "__file__" to "__file__"
+app.config.from_pyfile(f'{os.path.dirname(__file__)}/api_configs.py')
 
 global press_keys
 press_keys = True
@@ -111,7 +115,7 @@ def getpressvar():
 
 @app.route('/GTP/UI')
 def GToolUI():
-    return render_template('GTP/GTP.html')
+    return render_template(f'GTP/GTP.html')
 
 
 
@@ -124,8 +128,8 @@ def GTP_Appjs():
 
 @app.route('/GTP/Files/ModelTrain/<string:format>/<int:accuracy>')
 def GTP_ModelJson(accuracy, format):
-    if os.path.isfile(os.path.abspath(f'{os.path.dirname(sys.executable)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}')):
-        return send_file(f'{os.path.dirname(sys.executable)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}'), 200
+    if os.path.isfile(os.path.abspath(f'{os.path.dirname(__file__)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}')):
+        return send_file(f'{os.path.dirname(__file__)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.{format}'), 200
     
     else: 
         return 'Error to found file with this accuracy.', 404
@@ -135,7 +139,7 @@ def GTP_ModelJson(accuracy, format):
 @app.route('/GTP/Files/ModelTrain/json/group1-shard1of1.bin')
 def helping_to_tf():
     accuracy = 98
-    return send_file(f'{os.path.dirname(sys.executable)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.bin'), 200
+    return send_file(f'{os.path.dirname(__file__)}/Templates/GTP/Models/{accuracy}/model-{accuracy}.bin'), 200
     
 
 app.run(port = 5000)
