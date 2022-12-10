@@ -17,6 +17,8 @@ import datetime
 import subprocess
 import threading
 import sys
+import random
+
 
 # Correr servidor ngrok
 command = 'ngrok http 5000'.split(' ')
@@ -59,6 +61,16 @@ def down_key(dkey):
 @app.route('/GTP/API/macros/walk')
 def walk_macro(work_type: int):
     if work_type == 1:
+
+        pag.keyDown('y') # Antibug con redundancia, por que el menú se abre en ocaciones si le das a la "y"
+        pag.keyDown('y')
+        pag.keyDown('y')
+        pag.keyDown('y')
+        pag.keyDown('y')
+        time.slee(.5)
+        pag.keyDown('esc') # Cerramos el menú.
+        
+
         # Caminar hacia la zona de trabajo.
         pag.keyDown('w') # Teclado para avanazr
         time.sleep(5.3)
@@ -72,8 +84,14 @@ def walk_macro(work_type: int):
 
 
 
-        # pag.press('d') # redundancia
-        # pag.press('d') # redundancia
+        s_rand = random.randint(0, 100) # Change?
+        if s_rand >= 50: # En teoría, un 50% de las veces, oprimirá la d dos veces para acomodar el rumbo. 
+            pag.press('d') # redundancia
+            pag.press('d') # redundancia
+
+
+
+
         pag.keyDown('s') # Tecla para retrodeceder.
         time.sleep(5.3)
         pag.keyUp('s') # Tecla para dejar de retroceder.
