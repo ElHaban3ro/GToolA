@@ -3,6 +3,7 @@ var consults = new XMLHttpRequest();
 var consultsWalk = new XMLHttpRequest();
 
 var consultsAnyKey = new XMLHttpRequest();
+var consultsDesbug = new XMLHttpRequest();
 
 var consultsStop = new XMLHttpRequest();
 
@@ -130,6 +131,9 @@ function prediction() {
             hviId = setInterval(handlerVar, 1000)
 
             consultsStop.onload = () => {
+
+                // consultsDesbug.open('GET', '/GTP/API/macros/desbug') // Se "desbuguea" primero.
+                // consultsDesbug.send()
 
                 consultsAnyKey.open('GET', '/GTP/API/press/a')
                 consultsAnyKey.send()

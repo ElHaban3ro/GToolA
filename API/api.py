@@ -25,7 +25,6 @@ command = 'ngrok http 5000'.split(' ')
 threading.Thread(target = lambda: subprocess.run(command)).start()
 
 
-
 # print(os.path.dirname(__file__))
 app = Flask(__name__)
 
@@ -39,6 +38,16 @@ press_keys = True
 
 # GTP
 # URLs
+@app.route('/GTP/API/macros/desbug')
+def desbug():
+    pag.press('y') # Antibug con redundancia, por que el menú se abre en ocaciones si le das a la "y"
+    pag.press('y')
+    pag.press('y')
+    pag.press('y')
+    time.sleep(1)
+    pag.press('esc') # Cerramos el menú.
+
+
 @app.route('/GTP/API/press/<string:dkey>')
 def down_key(dkey):
     # Down key.
@@ -51,6 +60,7 @@ def down_key(dkey):
         return f'He oprimido la tecla {escape(dkey).upper()}', 200
     
     else:
+        desbug()
         walk_macro(1)
         time.sleep(3)
 
@@ -58,19 +68,14 @@ def down_key(dkey):
         return f'Walk macro activated.', 200
 
 
+    
+
+
+
 @app.route('/GTP/API/macros/walk')
 def walk_macro(work_type: int):
+
     if work_type == 1:
-
-        pag.keyDown('y') # Antibug con redundancia, por que el menú se abre en ocaciones si le das a la "y"
-        pag.keyDown('y')
-        pag.keyDown('y')
-        pag.keyDown('y')
-        pag.keyDown('y')
-        time.slee(.5)
-        pag.keyDown('esc') # Cerramos el menú.
-        
-
         # Caminar hacia la zona de trabajo.
         pag.keyDown('w') # Teclado para avanazr
         time.sleep(5.3)
@@ -95,8 +100,6 @@ def walk_macro(work_type: int):
         pag.keyDown('s') # Tecla para retrodeceder.
         time.sleep(5.3)
         pag.keyUp('s') # Tecla para dejar de retroceder.
-        pag.press('f')
-        pag.press('f')
 
 
         global press_keys
