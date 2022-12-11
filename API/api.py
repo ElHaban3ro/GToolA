@@ -34,7 +34,7 @@ app.config.from_pyfile(f'{os.path.dirname(__file__)}/api_configs.py')
 global press_keys
 press_keys = True
 
-
+ff
 
 # GTP
 # URLs
@@ -46,6 +46,8 @@ def desbug():
     pag.press('y')
     time.sleep(1)
     pag.press('esc') # Cerramos el menú.
+    pag.time.sleep(1)
+    # pag.keyUp('esc') # Cerramos el menú.
 
 
 @app.route('/GTP/API/press/<string:dkey>')
@@ -60,9 +62,8 @@ def down_key(dkey):
         return f'He oprimido la tecla {escape(dkey).upper()}', 200
     
     else:
-        desbug()
         walk_macro(1)
-        time.sleep(3)
+        time.sleep(2)
 
         press_keys = True
         return f'Walk macro activated.', 200
@@ -74,8 +75,9 @@ def down_key(dkey):
 
 @app.route('/GTP/API/macros/walk')
 def walk_macro(work_type: int):
-
     if work_type == 1:
+        desbug()
+
         # Caminar hacia la zona de trabajo.
         pag.keyDown('w') # Teclado para avanazr
         time.sleep(5.3)
@@ -100,6 +102,10 @@ def walk_macro(work_type: int):
         pag.keyDown('s') # Tecla para retrodeceder.
         time.sleep(5.3)
         pag.keyUp('s') # Tecla para dejar de retroceder.
+
+        pag.press('f') # Vuelve a empezar a trabajar 
+        pag.press('f')
+
 
 
         global press_keys
